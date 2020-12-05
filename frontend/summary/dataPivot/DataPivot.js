@@ -242,6 +242,7 @@ class DataPivot {
     build_settings() {
         this.dpe_options = DataPivotExtension.get_options(this);
         var self = this,
+            descTab = $('<div class="tab-pane active" id="data_pivot_settings_description">'),
             content = [
                 $('<ul class="nav nav-tabs">').append(
                     '<li class="nav-item"><a class="nav-link active" href="#data_pivot_settings_description" data-toggle="tab">Descriptive text columns</a></li>',
@@ -251,8 +252,8 @@ class DataPivot {
                     '<li class="nav-item"><a class="nav-link" href="#data_pivot_settings_styles" data-toggle="tab">Styles</a></li>',
                     '<li class="nav-item"><a class="nav-link dp_general_tab" href="#data_pivot_settings_general" data-toggle="tab">Other settings</a></li>'
                 ),
-                $('<div class="tab-content"></div>').append(
-                    build_description_tab(self),
+                $('<div class="tab-content">').append(
+                    descTab,
                     build_data_tab(self),
                     build_ordering_tab(self),
                     build_reference_tab(self),
@@ -267,6 +268,8 @@ class DataPivot {
             }
             self.triggerOnRenderedCallbacks();
         });
+
+        build_description_tab(descTab[0], self);
     }
 
     _get_header_options(show_blank) {

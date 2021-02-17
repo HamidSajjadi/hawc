@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import NotAcceptable, PermissionDenied
 from rest_framework.response import Response
 
+import pandas as pd
 from ..assessment.api import (
     AssessmentLevelPermissions,
     AssessmentViewset,
@@ -72,6 +73,15 @@ class AnimalAssessmentViewset(
             assessment=self.assessment,
         )
         return Response(exporter.build_export())
+
+    @action(detail=True, url_path="all-endpoints", renderer_classes=PandasRenderers)
+    def all_endpoints(self, request, pk):
+        self.set_legacy_attr(pk)
+        self.permission_check_user_can_edit()
+        qs = models.Endpoint.objects.assessment_qs(pk).values()
+        df = pd.DataFrame(list(qs))
+        export = FlatExport(df=df, filename=f"all-endpoints-{self.assessment.id}")
+        return Response(export)
 
     @action(detail=True, url_path="study-heatmap", renderer_classes=PandasRenderers)
     def study_heatmap(self, request, pk):
